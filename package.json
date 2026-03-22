@@ -1,21 +1,52 @@
 {
   "name": "articlelang",
   "version": "0.1.0",
+  "type": "module",
   "description": "Composable Storytelling Language (CSL) - a DSL for article/story specifications",
+  "author": "Pelayo Mendez (https://github.com/pelayomendez)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pelayomendez/articlelang.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pelayomendez/articlelang/issues"
+  },
+  "homepage": "https://github.com/pelayomendez/articlelang#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "bin": {
     "csl": "dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": ["dsl", "storytelling", "narrative", "compiler"],
-  "license": "MIT",
+  "keywords": [
+    "dsl",
+    "storytelling",
+    "narrative",
+    "compiler",
+    "article",
+    "prompt",
+    "language"
+  ],
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "typescript": "^5.4.0",
     "vitest": "^2.0.0"
   }

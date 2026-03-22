@@ -1,0 +1,18 @@
+// Invalid: uses a pattern that does not exist in the registry
+article "An Article With a Made-Up Pattern" {
+  thesis: "This article uses a nonexistent pattern"
+  goal: explain
+  audience: "Developers"
+  tone: analytical
+
+  use nonexistent_pattern
+
+  nonexistent_pattern {
+    foo: "bar"
+  }
+
+  constraints {
+    min_words: 500
+    max_words: 1000
+  }
+}
