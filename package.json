@@ -1,6 +1,6 @@
 {
   "name": "articlelang",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Composable Storytelling Language (CSL) - a DSL for article/story specifications",
   "author": "Pelayo Mendez (https://github.com/pelayomendez)",

@@ -7,3 +7,4 @@ export * from "./ir/index.js";
 export * from "./compiler/index.js";
 export * from "./providers/index.js";
 export * from "./lint/index.js";
+export * from "./serializer/index.js";
