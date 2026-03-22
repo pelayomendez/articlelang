@@ -102,8 +102,8 @@ describe("prompt compiler", () => {
       }
     `);
     const user = payload.sections[1].content;
-    expect(user).toContain("CLAIM");
-    expect(user).toContain("TRANSITION");
+    expect(user).toContain("Argue");
+    expect(user).toContain("Transition");
     expect(user).toContain("Old");
     expect(user).toContain("New");
   });
