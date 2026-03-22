@@ -1,0 +1,20 @@
+// Invalid: missing required thesis field
+article "An Article Without Direction" {
+  goal: inform
+  audience: "General readers"
+  tone: conversational
+
+  use progressive_argument
+
+  progressive_argument {
+    points: [
+      "First point",
+      "Second point"
+    ]
+  }
+
+  constraints {
+    min_words: 500
+    max_words: 1000
+  }
+}

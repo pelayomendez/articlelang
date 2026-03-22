@@ -1,0 +1,22 @@
+{
+  "name": "articlelang",
+  "version": "0.1.0",
+  "description": "Composable Storytelling Language (CSL) - a DSL for article/story specifications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "csl": "dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": ["dsl", "storytelling", "narrative", "compiler"],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}

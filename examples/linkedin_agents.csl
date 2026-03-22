@@ -1,0 +1,42 @@
+article "Stop Building AI Wrappers, Start Building AI Agents" {
+  thesis: "Most AI products are thin wrappers around language models, but real value comes from agentic architectures"
+  goal: persuade
+  audience: "Product managers and startup founders"
+  tone: conversational
+
+  use contrarian_intro
+  use progressive_argument
+  use analogy_bridge
+  use open_ending
+
+  contrarian_intro {
+    claim: "Everyone is building AI-powered products"
+    reframe: "But most are just glorified API proxies"
+  }
+
+  progressive_argument {
+    points: [
+      "Wrappers add a UI layer but no intelligence",
+      "Agents compose tools and maintain context across tasks",
+      "The moat is in orchestration, not in prompting"
+    ]
+  }
+
+  analogy_bridge {
+    source: "The difference between a calculator and a spreadsheet"
+    target: "The difference between an AI wrapper and an AI agent"
+    insight: "One performs a function; the other orchestrates workflows"
+  }
+
+  open_ending {
+    question: "What would your product look like if it could act, not just respond?"
+  }
+
+  constraints {
+    min_words: 800
+    max_words: 1200
+    no_lists: true
+    banned_phrases: ["game-changer", "leverage AI", "synergy"]
+    paragraph_min_sentences: 2
+  }
+}

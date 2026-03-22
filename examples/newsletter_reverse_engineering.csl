@@ -1,0 +1,44 @@
+article "Reverse Engineering the Best Technical Newsletters" {
+  thesis: "The most successful technical newsletters share a hidden rhetorical structure that can be decomposed and replicated"
+  goal: explain
+  audience: "Technical writers and developer advocates"
+  tone: analytical
+
+  use progressive_argument
+  use concrete_example
+  use counterpoint_rebuttal
+  use reframe_conclusion
+
+  progressive_argument {
+    points: [
+      "Great newsletters open with a surprising claim or observation",
+      "They build credibility through specific technical examples",
+      "They close by reframing the reader's existing mental model"
+    ]
+  }
+
+  concrete_example {
+    scenario: "Analyzing a popular Substack post on database internals"
+    before: "A dry summary of B-tree indexing"
+    after: "A narrative that makes the reader feel like they discovered the insight themselves"
+  }
+
+  counterpoint_rebuttal {
+    counterpoint: "Good writing is purely an art that cannot be systematized"
+    rebuttal: "While voice and style are personal, rhetorical structure is a learnable craft"
+  }
+
+  reframe_conclusion {
+    callback: "The newsletters you admire most"
+    reframe: "are not just well-written, they are well-structured"
+  }
+
+  constraints {
+    min_words: 1800
+    max_words: 3000
+    no_lists: true
+    banned_phrases: ["content creation", "thought leader"]
+    required_phrases: ["rhetorical structure"]
+    paragraph_min_sentences: 3
+  }
+}

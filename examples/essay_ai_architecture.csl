@@ -1,0 +1,44 @@
+article "Why AI Agents Will Replace Microservices" {
+  thesis: "Agent-based architectures will supersede microservice patterns within five years"
+  goal: persuade
+  audience: "Senior software engineers and technical architects"
+  tone: provocative
+
+  use contrarian_intro
+  use progressive_argument
+  use concrete_example
+  use reframe_conclusion
+
+  contrarian_intro {
+    claim: "Microservices solved distributed computing"
+    reframe: "But agents solve it better"
+  }
+
+  progressive_argument {
+    points: [
+      "Agents internalize routing logic",
+      "State becomes agent-scoped rather than service-scoped",
+      "Deployment collapses to a single artifact"
+    ]
+  }
+
+  concrete_example {
+    scenario: "A payment processing pipeline"
+    before: "Five microservices with async message queues"
+    after: "One agent with tool access and memory"
+  }
+
+  reframe_conclusion {
+    callback: "The same engineers who adopted microservices"
+    reframe: "will be the first to abandon them for agents"
+  }
+
+  constraints {
+    min_words: 1500
+    max_words: 2500
+    no_lists: true
+    banned_phrases: ["in conclusion", "it goes without saying"]
+    required_phrases: ["agent-based architecture"]
+    paragraph_min_sentences: 3
+  }
+}
