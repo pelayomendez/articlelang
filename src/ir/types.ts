@@ -39,6 +39,12 @@ export interface OutputConstraints {
   paragraphMinSentences?: number;
 }
 
+export interface StyleFilter {
+  name: string;
+  directives: string[];
+  config: Record<string, string>;
+}
+
 export interface NarrativeIR {
   title: string;
   thesis: string;
@@ -48,4 +54,5 @@ export interface NarrativeIR {
   voice: string | null;
   units: NarrativeUnit[];
   constraints: OutputConstraints;
+  filters: StyleFilter[];
 }

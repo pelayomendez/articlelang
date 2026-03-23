@@ -1,7 +1,8 @@
 import type { ArticleNode, FieldNode, ValueNode } from "../ast/types.js";
 import type { PatternDefinition } from "../patterns/registry.js";
 import { PatternRegistry, defaultRegistry } from "../patterns/registry.js";
-import type { NarrativeIR, NarrativeUnit, OutputConstraints, TransitionStyle } from "./types.js";
+import { FilterRegistry, defaultFilterRegistry } from "../filters/registry.js";
+import type { NarrativeIR, NarrativeUnit, OutputConstraints, StyleFilter, TransitionStyle } from "./types.js";
 
 export class IRCompilationError extends Error {
   constructor(message: string) {
@@ -12,6 +13,7 @@ export class IRCompilationError extends Error {
 
 export interface IRCompilerOptions {
   registry?: PatternRegistry;
+  filterRegistry?: FilterRegistry;
 }
 
 export function compileToIR(
@@ -19,6 +21,7 @@ export function compileToIR(
   options: IRCompilerOptions = {},
 ): NarrativeIR {
   const registry = options.registry ?? defaultRegistry;
+  const filterReg = options.filterRegistry ?? defaultFilterRegistry;
 
   const title = ast.title.value;
   const thesis = getStringField(ast.fields, "thesis") ?? "";
@@ -42,6 +45,7 @@ export function compileToIR(
   }
 
   const constraints = compileConstraints(ast);
+  const filters = compileFilters(ast, filterReg);
 
   return {
     title,
@@ -54,6 +58,7 @@ export function compileToIR(
     voice,
     units,
     constraints,
+    filters,
   };
 }
 
@@ -199,4 +204,26 @@ function compileConstraints(ast: ArticleNode): OutputConstraints {
   }
 
   return result;
+}
+
+function compileFilters(ast: ArticleNode, filterReg: FilterRegistry): StyleFilter[] {
+  if (!ast.filters) return [];
+
+  return ast.filters.filters.map((inv) => {
+    const name = inv.filterName.name;
+    const def = filterReg.get(name);
+    const config: Record<string, string> = {};
+    for (const field of inv.fields) {
+      if (field.value.type === "Identifier") {
+        config[field.name.name] = field.value.name;
+      } else if (field.value.type === "StringLiteral") {
+        config[field.name.name] = field.value.value;
+      }
+    }
+    return {
+      name,
+      directives: def?.directives ?? [],
+      config,
+    };
+  });
 }

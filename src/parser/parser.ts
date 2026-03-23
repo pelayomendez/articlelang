@@ -6,6 +6,8 @@ import type {
   UseStatement,
   PatternInvocation,
   ConstraintsBlock,
+  FilterInvocation,
+  FiltersBlock,
   ValueNode,
   StringLiteral,
   NumberLiteral,
@@ -166,6 +168,38 @@ export function parse(tokens: Token[]): ArticleNode {
     };
   }
 
+  function parseFilterInvocation(): FilterInvocation {
+    const nameTok = expect(TokenType.Identifier, "filter name");
+    const name: Identifier = { type: "Identifier", name: nameTok.value, span: nameTok.span };
+    expect(TokenType.LeftBrace, "filter block");
+    const fields: FieldNode[] = [];
+
+    while (current().type !== TokenType.RightBrace) {
+      fields.push(parseField());
+    }
+
+    const end = expect(TokenType.RightBrace).span.end;
+    return {
+      type: "FilterInvocation",
+      filterName: name,
+      fields,
+      span: { start: nameTok.span.start, end },
+    };
+  }
+
+  function parseFiltersBlock(): FiltersBlock {
+    const start = expect(TokenType.Filters).span.start;
+    expect(TokenType.LeftBrace, "filters block");
+    const filters: FilterInvocation[] = [];
+
+    while (current().type !== TokenType.RightBrace) {
+      filters.push(parseFilterInvocation());
+    }
+
+    const end = expect(TokenType.RightBrace).span.end;
+    return { type: "FiltersBlock", filters, span: { start, end } };
+  }
+
   function parseArticle(): ArticleNode {
     const start = expect(TokenType.Article).span.start;
     const titleTok = expect(TokenType.String, "article title");
@@ -177,11 +211,17 @@ export function parse(tokens: Token[]): ArticleNode {
     const useStatements: UseStatement[] = [];
     const patternInvocations: PatternInvocation[] = [];
     let constraints: ConstraintsBlock | null = null;
+    let filters: FiltersBlock | null = null;
 
     while (current().type !== TokenType.RightBrace) {
       const tok = current();
 
-      if (tok.type === TokenType.Use) {
+      if (tok.type === TokenType.Filters) {
+        if (filters !== null) {
+          throw new ParseError("Duplicate filters block", tok.span.start);
+        }
+        filters = parseFiltersBlock();
+      } else if (tok.type === TokenType.Use) {
         const useStart = tok.span.start;
         pos++;
         const patternTok = expect(TokenType.Identifier, "pattern name");
@@ -227,6 +267,7 @@ export function parse(tokens: Token[]): ArticleNode {
       useStatements,
       patternInvocations,
       constraints,
+      filters,
       span: { start, end },
     };
   }

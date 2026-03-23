@@ -72,6 +72,19 @@ export interface ConstraintsBlock {
   span: SourceSpan;
 }
 
+export interface FilterInvocation {
+  type: "FilterInvocation";
+  filterName: Identifier;
+  fields: FieldNode[];
+  span: SourceSpan;
+}
+
+export interface FiltersBlock {
+  type: "FiltersBlock";
+  filters: FilterInvocation[];
+  span: SourceSpan;
+}
+
 export interface ArticleNode {
   type: "Article";
   title: StringLiteral;
@@ -79,6 +92,7 @@ export interface ArticleNode {
   useStatements: UseStatement[];
   patternInvocations: PatternInvocation[];
   constraints: ConstraintsBlock | null;
+  filters: FiltersBlock | null;
   span: SourceSpan;
 }
 
@@ -92,4 +106,6 @@ export type ASTNode =
   | ArrayLiteral
   | UseStatement
   | PatternInvocation
-  | ConstraintsBlock;
+  | ConstraintsBlock
+  | FilterInvocation
+  | FiltersBlock;

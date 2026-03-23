@@ -15,6 +15,7 @@ const KEYWORDS: Record<string, TokenType> = {
   article: TokenType.Article,
   use: TokenType.Use,
   constraints: TokenType.Constraints,
+  filters: TokenType.Filters,
   true: TokenType.True,
   false: TokenType.False,
 };

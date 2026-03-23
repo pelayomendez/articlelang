@@ -5,6 +5,7 @@ export enum TokenType {
   Article = "Article",
   Use = "Use",
   Constraints = "Constraints",
+  Filters = "Filters",
   True = "True",
   False = "False",
 

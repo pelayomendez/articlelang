@@ -7,4 +7,5 @@ export type {
   ToneDirective,
   AudienceDirective,
   OutputConstraints,
+  StyleFilter,
 } from "./types.js";

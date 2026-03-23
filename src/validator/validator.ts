@@ -22,8 +22,14 @@ export interface PatternSchema {
   optionalFields: string[];
 }
 
+interface FilterSchema {
+  name: string;
+  optionalFields: string[];
+}
+
 export interface ValidatorOptions {
   knownPatterns?: Map<string, PatternSchema>;
+  knownFilters?: Map<string, FilterSchema>;
 }
 
 export function validate(
@@ -32,6 +38,7 @@ export function validate(
 ): ValidationResult {
   const errors: ValidationError[] = [];
   const knownPatterns = options.knownPatterns ?? new Map<string, PatternSchema>();
+  const knownFilters = options.knownFilters ?? new Map<string, FilterSchema>();
 
   // Required fields
   const thesisField = ast.fields.find((f) => f.name.name === "thesis");
@@ -227,6 +234,42 @@ export function validate(
     }
 
     validateConstraintTypes(ast.constraints.fields, errors);
+  }
+
+  // Validate filters
+  if (ast.filters) {
+    const usedFilters = new Set<string>();
+    for (const filter of ast.filters.filters) {
+      const name = filter.filterName.name;
+
+      if (usedFilters.has(name)) {
+        errors.push(
+          validationError("DUPLICATE_FILTER", `Duplicate filter '${name}'`, filter.filterName.span),
+        );
+      }
+      usedFilters.add(name);
+
+      if (knownFilters.size > 0 && !knownFilters.has(name)) {
+        errors.push(
+          validationError("UNKNOWN_FILTER", `Unknown filter '${name}'`, filter.filterName.span),
+        );
+      }
+
+      const schema = knownFilters.get(name);
+      if (schema) {
+        for (const field of filter.fields) {
+          if (!schema.optionalFields.includes(field.name.name)) {
+            errors.push(
+              validationError(
+                "UNKNOWN_FILTER_FIELD",
+                `Unknown field '${field.name.name}' in filter '${name}'`,
+                field.name.span,
+              ),
+            );
+          }
+        }
+      }
+    }
   }
 
   return { valid: errors.length === 0, errors };

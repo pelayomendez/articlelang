@@ -95,6 +95,19 @@ function buildSystemPrompt(ir: NarrativeIR, target: string): string {
     }
   }
 
+  // Style filters
+  if (ir.filters.length > 0) {
+    lines.push("");
+    lines.push("Style filters (apply these writing style rules throughout the entire article):");
+    for (const filter of ir.filters) {
+      const intensity = filter.config.intensity;
+      const label = intensity ? `${filter.name} (${intensity})` : filter.name;
+      for (const directive of filter.directives) {
+        lines.push(`- [${label}] ${directive}`);
+      }
+    }
+  }
+
   return lines.join("\n");
 }
 

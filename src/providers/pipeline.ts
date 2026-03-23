@@ -2,6 +2,7 @@ import { lex } from "../lexer/index.js";
 import { parse } from "../parser/index.js";
 import { validate } from "../validator/index.js";
 import { defaultRegistry } from "../patterns/index.js";
+import { defaultFilterRegistry } from "../filters/index.js";
 import { compileToIR } from "../ir/index.js";
 import { compilePrompt } from "../compiler/index.js";
 import type { LLMProvider, RenderResult } from "./provider.js";
@@ -36,6 +37,7 @@ export async function renderPipeline(
 
   const validation = validate(ast, {
     knownPatterns: defaultRegistry.toSchemaMap(),
+    knownFilters: defaultFilterRegistry.toSchemaMap(),
   });
 
   if (!validation.valid) {
