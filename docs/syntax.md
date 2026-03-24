@@ -92,6 +92,29 @@ constraints {
 - `required_phrases` — phrases that must appear (string array)
 - `paragraph_min_sentences` — minimum sentences per paragraph (number)
 
+## Filters Block
+Apply writing style modifiers inspired by famous writers and copywriters. Filters inject style directives into the system prompt so the LLM generates in that voice from the start.
+
+```
+filters {
+  hemingway {}
+  ogilvy { intensity: high }
+}
+```
+
+Each filter can optionally have configuration fields. Empty `{}` means use defaults.
+
+### Built-in Filters
+- `ogilvy` — David Ogilvy's advertising copy: specific facts, benefit-driven, direct address
+- `hemingway` — minimalist prose: short sentences, concrete nouns, active voice, no adverbs
+- `gonzo` — Hunter S. Thompson's gonzo journalism: first-person, visceral, irreverent
+- `orwell` — George Orwell's clarity rules: short words, cut fluff, no cliches, active voice
+- `scientific` — academic register: hedged claims, precise terminology, evidence-oriented
+- `storyteller` — narrative nonfiction: anecdotal openings, scene-setting, delayed thesis
+
+### Filter Options
+- `intensity` — optional, values: `low`, `medium`, `high`
+
 ## Numbers and Booleans
 - **Numbers**: bare integer literals `1500`
 - **Booleans**: bare `true` or `false`
@@ -146,6 +169,11 @@ article "Why AI Agents Will Replace Microservices" {
   reframe_conclusion {
     callback: "The same engineers who adopted microservices"
     reframe: "will be the first to abandon them"
+  }
+
+  filters {
+    ogilvy { intensity: high }
+    hemingway {}
   }
 
   constraints {
