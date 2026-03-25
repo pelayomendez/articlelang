@@ -16,6 +16,7 @@ const KEYWORDS: Record<string, TokenType> = {
   use: TokenType.Use,
   constraints: TokenType.Constraints,
   filters: TokenType.Filters,
+  content: TokenType.Content,
   true: TokenType.True,
   false: TokenType.False,
 };
@@ -106,6 +107,55 @@ export function lex(source: string): Token[] {
     }
   }
 
+  function readTextBody(): Token {
+    const start = location();
+    advance(); // first -
+    advance(); // second -
+    advance(); // third -
+    // Skip the rest of the opening --- line (whitespace/newline)
+    while (pos < source.length && peek() !== "\n") {
+      if (!/\s/.test(peek())) {
+        throw new LexerError("Unexpected content after opening ---", location());
+      }
+      advance();
+    }
+    if (pos < source.length) advance(); // skip newline
+
+    let value = "";
+    while (pos < source.length) {
+      // Check for closing ---
+      if (
+        source[pos] === "-" &&
+        pos + 1 < source.length && source[pos + 1] === "-" &&
+        pos + 2 < source.length && source[pos + 2] === "-"
+      ) {
+        // Verify it's --- on its own (only whitespace before it on the line)
+        const lineStart = value.lastIndexOf("\n");
+        const lineContent = lineStart === -1 ? value : value.slice(lineStart + 1);
+        if (lineContent.trim() === "") {
+          // Remove trailing whitespace-only line from value
+          if (lineStart !== -1) {
+            value = value.slice(0, lineStart + 1);
+          } else {
+            value = "";
+          }
+          advance(); advance(); advance(); // skip ---
+          // Skip rest of closing --- line
+          while (pos < source.length && peek() !== "\n" && /\s/.test(peek())) {
+            advance();
+          }
+          // Trim trailing newline from captured text
+          if (value.endsWith("\n")) {
+            value = value.slice(0, -1);
+          }
+          return { type: TokenType.TextBody, value, span: { start, end: location() } };
+        }
+      }
+      value += advance();
+    }
+    throw new LexerError("Unterminated text body (missing closing ---)", start);
+  }
+
   while (pos < source.length) {
     skipWhitespace();
     if (pos >= source.length) break;
@@ -115,6 +165,12 @@ export function lex(source: string): Token[] {
 
     if (ch === "/" && pos + 1 < source.length && source[pos + 1] === "/") {
       readComment();
+      continue;
+    }
+
+    if (ch === "-" && pos + 1 < source.length && source[pos + 1] === "-" &&
+        pos + 2 < source.length && source[pos + 2] === "-") {
+      tokens.push(readTextBody());
       continue;
     }
 

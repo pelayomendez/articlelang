@@ -3,7 +3,9 @@ export type NarrativeUnitKind =
   | "support"
   | "transition"
   | "conclusion"
-  | "context";
+  | "context"
+  | "verbatim"
+  | "rewrite";
 
 export type TransitionStyle =
   | "reversal"
@@ -19,6 +21,7 @@ export interface NarrativeUnit {
   role: string;
   transitionStyle?: TransitionStyle;
   sourcePattern: string | null;
+  filters?: StyleFilter[];
 }
 
 export interface ToneDirective {

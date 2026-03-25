@@ -6,6 +6,7 @@ export enum TokenType {
   Use = "Use",
   Constraints = "Constraints",
   Filters = "Filters",
+  Content = "Content",
   True = "True",
   False = "False",
 
@@ -13,6 +14,7 @@ export enum TokenType {
   String = "String",
   Number = "Number",
   Identifier = "Identifier",
+  TextBody = "TextBody",
 
   // Punctuation
   LeftBrace = "LeftBrace",

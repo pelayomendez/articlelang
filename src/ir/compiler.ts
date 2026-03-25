@@ -1,4 +1,4 @@
-import type { ArticleNode, FieldNode, ValueNode } from "../ast/types.js";
+import type { ArticleNode, ContentBlock, FieldNode, ValueNode } from "../ast/types.js";
 import type { PatternDefinition } from "../patterns/registry.js";
 import { PatternRegistry, defaultRegistry } from "../patterns/registry.js";
 import { FilterRegistry, defaultFilterRegistry } from "../filters/registry.js";
@@ -42,6 +42,11 @@ export function compileToIR(
 
     const expanded = expandPattern(pattern, invocation.fields);
     units.push(...expanded);
+  }
+
+  // Expand content blocks into narrative units
+  for (const block of ast.contentBlocks) {
+    units.push(compileContentBlock(block, filterReg));
   }
 
   const constraints = compileConstraints(ast);
@@ -159,6 +164,41 @@ function getIdentifierField(fields: FieldNode[], name: string): string | null {
   const field = fields.find((f) => f.name.name === name);
   if (!field || field.value.type !== "Identifier") return null;
   return field.value.name;
+}
+
+function compileContentBlock(block: ContentBlock, filterReg: FilterRegistry): NarrativeUnit {
+  const label = block.label?.value ?? "user content";
+  const hasFilters = block.filters && block.filters.filters.length > 0;
+
+  if (hasFilters) {
+    const blockFilters: StyleFilter[] = block.filters!.filters.map((inv) => {
+      const name = inv.filterName.name;
+      const def = filterReg.get(name);
+      const config: Record<string, string> = {};
+      for (const field of inv.fields) {
+        if (field.value.type === "Identifier") {
+          config[field.name.name] = field.value.name;
+        } else if (field.value.type === "StringLiteral") {
+          config[field.name.name] = field.value.value;
+        }
+      }
+      return { name, directives: def?.directives ?? [], config };
+    });
+    return {
+      kind: "rewrite",
+      content: block.body,
+      role: label,
+      sourcePattern: null,
+      filters: blockFilters,
+    };
+  }
+
+  return {
+    kind: "verbatim",
+    content: block.body,
+    role: label,
+    sourcePattern: null,
+  };
 }
 
 function compileConstraints(ast: ArticleNode): OutputConstraints {

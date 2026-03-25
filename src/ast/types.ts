@@ -85,12 +85,21 @@ export interface FiltersBlock {
   span: SourceSpan;
 }
 
+export interface ContentBlock {
+  type: "ContentBlock";
+  label: StringLiteral | null;
+  body: string;
+  filters: FiltersBlock | null;
+  span: SourceSpan;
+}
+
 export interface ArticleNode {
   type: "Article";
   title: StringLiteral;
   fields: FieldNode[];
   useStatements: UseStatement[];
   patternInvocations: PatternInvocation[];
+  contentBlocks: ContentBlock[];
   constraints: ConstraintsBlock | null;
   filters: FiltersBlock | null;
   span: SourceSpan;
@@ -108,4 +117,5 @@ export type ASTNode =
   | PatternInvocation
   | ConstraintsBlock
   | FilterInvocation
-  | FiltersBlock;
+  | FiltersBlock
+  | ContentBlock;

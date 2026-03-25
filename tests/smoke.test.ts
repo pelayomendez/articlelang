@@ -13,6 +13,7 @@ describe("smoke test", () => {
       fields: [],
       useStatements: [],
       patternInvocations: [],
+      contentBlocks: [],
       constraints: null,
       span: { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 5, offset: 4 } },
     };

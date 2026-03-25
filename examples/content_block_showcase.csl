@@ -1,0 +1,58 @@
+article "The Hidden Cost of Technical Debt" {
+  thesis: "Technical debt is not just a developer problem — it is a business risk that compounds silently"
+  goal: persuade
+  audience: "Engineering managers and CTOs"
+  tone: authoritative
+
+  use contrarian_intro
+  use progressive_argument
+
+  contrarian_intro {
+    claim: "Every engineering team talks about technical debt"
+    reframe: "But almost none of them quantify its real cost"
+  }
+
+  progressive_argument {
+    points: [
+      "Debt slows feature velocity in ways that are invisible to product teams",
+      "Each workaround creates a new failure mode",
+      "The cost is not linear — it compounds quarterly"
+    ]
+  }
+
+  // Verbatim content: this paragraph appears exactly as written
+  content "author note" {
+    ---
+    Disclosure: I spent twelve years leading platform teams at companies where
+    technical debt eventually became the primary reason for missed roadmap targets.
+    The numbers in this article are drawn from internal audits I conducted between
+    2018 and 2023 across three organizations.
+    ---
+  }
+
+  // Filtered content: user-provided draft, rewritten in a specific style
+  content "executive summary" {
+    filters {
+      ogilvy { intensity: high }
+    }
+    ---
+    Technical debt costs companies money. Teams move slower. Bugs happen more.
+    New features take longer to ship. Eventually the codebase becomes so fragile
+    that even small changes carry outsized risk. Leaders should treat debt
+    reduction as a first-class initiative, not a side project.
+    ---
+  }
+
+  constraints {
+    min_words: 1200
+    max_words: 2000
+    no_lists: true
+    banned_phrases: ["at the end of the day", "it is what it is"]
+    required_phrases: ["technical debt"]
+    paragraph_min_sentences: 3
+  }
+
+  filters {
+    orwell {}
+  }
+}

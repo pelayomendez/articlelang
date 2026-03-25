@@ -34,6 +34,32 @@ export function serialize(ast: ArticleNode): string {
     }
   }
 
+  // Content blocks
+  for (const block of ast.contentBlocks) {
+    lines.push("");
+    const label = block.label ? ` "${escapeString(block.label.value)}"` : "";
+    lines.push(`  content${label} {`);
+    if (block.filters && block.filters.filters.length > 0) {
+      lines.push("    filters {");
+      for (const filter of block.filters.filters) {
+        if (filter.fields.length === 0) {
+          lines.push(`      ${filter.filterName.name} {}`);
+        } else {
+          lines.push(`      ${filter.filterName.name} {`);
+          for (const field of filter.fields) {
+            lines.push(`        ${field.name.name}: ${serializeValue(field.value)}`);
+          }
+          lines.push("      }");
+        }
+      }
+      lines.push("    }");
+    }
+    lines.push("    ---");
+    lines.push(block.body);
+    lines.push("    ---");
+    lines.push("  }");
+  }
+
   // Filters
   if (ast.filters && ast.filters.filters.length > 0) {
     lines.push("");

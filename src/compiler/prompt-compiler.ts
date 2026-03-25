@@ -125,7 +125,28 @@ function buildUserPrompt(ir: NarrativeIR): string {
 
     let sectionNum = 1;
     for (const unit of ir.units) {
-      lines.push(`${sectionNum}. ${formatUnit(unit)}`);
+      if (unit.kind === "verbatim") {
+        lines.push(`${sectionNum}. Include the following text EXACTLY as written, without any modifications:`);
+        lines.push(`"""`);
+        lines.push(unit.content);
+        lines.push(`"""`);
+      } else if (unit.kind === "rewrite") {
+        lines.push(`${sectionNum}. Rewrite the following text, applying the style rules below:`);
+        if (unit.filters && unit.filters.length > 0) {
+          for (const filter of unit.filters) {
+            const intensity = filter.config.intensity;
+            const label = intensity ? `${filter.name} (${intensity})` : filter.name;
+            for (const directive of filter.directives) {
+              lines.push(`   - [${label}] ${directive}`);
+            }
+          }
+        }
+        lines.push(`"""`);
+        lines.push(unit.content);
+        lines.push(`"""`);
+      } else {
+        lines.push(`${sectionNum}. ${formatUnit(unit)}`);
+      }
       sectionNum++;
     }
   }
@@ -158,4 +179,6 @@ const UNIT_VERBS: Record<string, string> = {
   transition: "Transition",
   context: "Set the scene",
   conclusion: "Conclude",
+  verbatim: "Include exactly as written",
+  rewrite: "Rewrite in the specified style",
 };

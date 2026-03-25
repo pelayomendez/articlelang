@@ -236,6 +236,35 @@ export function validate(
     validateConstraintTypes(ast.constraints.fields, errors);
   }
 
+  // Validate content blocks
+  for (const block of ast.contentBlocks) {
+    if (block.body.trim() === "") {
+      errors.push(
+        validationError("EMPTY_CONTENT", "Content block body cannot be empty", block.span),
+      );
+    }
+
+    if (block.filters) {
+      const usedFilters = new Set<string>();
+      for (const filter of block.filters.filters) {
+        const name = filter.filterName.name;
+
+        if (usedFilters.has(name)) {
+          errors.push(
+            validationError("DUPLICATE_FILTER", `Duplicate filter '${name}'`, filter.filterName.span),
+          );
+        }
+        usedFilters.add(name);
+
+        if (knownFilters.size > 0 && !knownFilters.has(name)) {
+          errors.push(
+            validationError("UNKNOWN_FILTER", `Unknown filter '${name}'`, filter.filterName.span),
+          );
+        }
+      }
+    }
+  }
+
   // Validate filters
   if (ast.filters) {
     const usedFilters = new Set<string>();

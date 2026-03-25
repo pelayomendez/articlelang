@@ -6,6 +6,7 @@ import type {
   UseStatement,
   PatternInvocation,
   ConstraintsBlock,
+  ContentBlock,
   FilterInvocation,
   FiltersBlock,
   ValueNode,
@@ -187,6 +188,34 @@ export function parse(tokens: Token[]): ArticleNode {
     };
   }
 
+  function parseContentBlock(): ContentBlock {
+    const start = expect(TokenType.Content).span.start;
+    let label: StringLiteral | null = null;
+    if (current().type === TokenType.String) {
+      const labelTok = current();
+      pos++;
+      label = { type: "StringLiteral", value: labelTok.value, span: labelTok.span };
+    }
+    expect(TokenType.LeftBrace, "content block");
+
+    let filters: FiltersBlock | null = null;
+    if (current().type === TokenType.Filters) {
+      filters = parseFiltersBlock();
+    }
+
+    const bodyTok = expect(TokenType.TextBody, "content body (--- delimited text)");
+    const body = bodyTok.value;
+
+    const end = expect(TokenType.RightBrace).span.end;
+    return {
+      type: "ContentBlock",
+      label,
+      body,
+      filters,
+      span: { start, end },
+    };
+  }
+
   function parseFiltersBlock(): FiltersBlock {
     const start = expect(TokenType.Filters).span.start;
     expect(TokenType.LeftBrace, "filters block");
@@ -210,13 +239,16 @@ export function parse(tokens: Token[]): ArticleNode {
     const fields: FieldNode[] = [];
     const useStatements: UseStatement[] = [];
     const patternInvocations: PatternInvocation[] = [];
+    const contentBlocks: ContentBlock[] = [];
     let constraints: ConstraintsBlock | null = null;
     let filters: FiltersBlock | null = null;
 
     while (current().type !== TokenType.RightBrace) {
       const tok = current();
 
-      if (tok.type === TokenType.Filters) {
+      if (tok.type === TokenType.Content) {
+        contentBlocks.push(parseContentBlock());
+      } else if (tok.type === TokenType.Filters) {
         if (filters !== null) {
           throw new ParseError("Duplicate filters block", tok.span.start);
         }
@@ -266,6 +298,7 @@ export function parse(tokens: Token[]): ArticleNode {
       fields,
       useStatements,
       patternInvocations,
+      contentBlocks,
       constraints,
       filters,
       span: { start, end },
